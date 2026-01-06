@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="py-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-righteous font-extrabold text-blue-900 tracking-tight">
+             Data Anggota Tabungan
+        </h1>
+        <p class="text-gray-600 mt-2">
+            Daftar seluruh anggota beserta ringkasan tabungannya.
+        </p>
+        <div class="h-1 bg-cyan-500 w-20 mt-4 rounded-full"></div>
+        <div class="mb-4 text-right">
+    <a href="/members/add"
+       class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+        <i class="fa-solid fa-plus"></i> Tambah Anggota
+    </a>
+</div>
+
+    </div>
+    
+
+    <!-- Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+
+        <div class="p-4 border-b bg-gray-50">
+            <h4 class="text-xl font-semibold text-blue-900">
+                <i class="fa-solid fa-id-card mr-2"></i> Daftar Anggota
+            </h4>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Nama Anggota</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">Minggu Terakhir</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase">Total Tabungan</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">Status</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase"> Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200">
+                    {% for m in members %}
+                    <tr class="hover:bg-indigo-50 transition">
+                        <td class="px-6 py-4 text-center text-sm text-gray-500">
+                            {{ loop.index }}
+                        </td>
+
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                            <i class="fa-solid fa-user mr-2 text-indigo-500"></i>
+                            {{ m.name }}
+                        </td>
+
+                        <td class="px-6 py-4 text-center text-sm font-bold text-cyan-600">
+                            {{ m.last_week }}
+                        </td>
+
+                        <td class="px-6 py-4 text-right text-sm font-extrabold text-indigo-600">
+                            Rp {{ m.total | format_rupiah }}
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm">
+                            {% if m.last_week >= 52 %}
+                                <span class="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-semibold">
+                                    Lunas 🎉
+                                </span>
+                            {% elif m.last_week >= 10 %}
+                                <span class="px-3 py-1 rounded-full bg-cyan-500 text-white text-xs font-semibold">
+                                    Aktif
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1 rounded-full bg-yellow-400 text-gray-900 text-xs font-semibold">
+                                    Baru
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center space-x-2">
+                            <a href="/members/{{ m.id }}"
+                            class="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">
+                                Detail
+                            </a>
+
+                            <form action="/members/delete/{{ m.id }}" method="POST" class="inline"
+                                onsubmit="return confirm('Yakin hapus anggota ini?')">
+                                <button class="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-3 text-center text-sm text-gray-500 border-t bg-gray-50">
+            Total Anggota: <span class="font-bold">{{ members|length }}</span>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

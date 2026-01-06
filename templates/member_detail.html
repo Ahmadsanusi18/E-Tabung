@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="py-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-righteous font-extrabold text-blue-900 tracking-tight">
+            <i class="fa-solid fa-user mr-3"></i> {{ member.name }}
+        </h1>
+        <p class="text-gray-600 mt-2">
+            Detail tabungan per minggu.
+        </p>
+        <div class="h-1 bg-cyan-500 w-20 mt-4 rounded-full"></div>
+    </div>
+
+    <!-- Ringkasan -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow border p-6">
+            <p class="text-sm text-gray-500">Total Tabungan</p>
+            <h2 class="text-3xl font-extrabold text-indigo-600 mt-2">
+                Rp {{ total | format_rupiah }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-xl shadow border p-6">
+            <p class="text-sm text-gray-500">Minggu Terakhir</p>
+            <h2 class="text-3xl font-extrabold text-cyan-600 mt-2">
+                {{ savings|length }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-xl shadow border p-6">
+            <p class="text-sm text-gray-500">Status</p>
+            {% if savings|length >= 52 %}
+                <span class="inline-block mt-2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-semibold">
+                    Lunas 🎉
+                </span>
+            {% elif savings|length >= 10 %}
+                <span class="inline-block mt-2 px-4 py-2 rounded-full bg-cyan-500 text-white text-sm font-semibold">
+                    Aktif
+                </span>
+            {% else %}
+                <span class="inline-block mt-2 px-4 py-2 rounded-full bg-yellow-400 text-gray-900 text-sm font-semibold">
+                    Baru
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+    <!-- Tabel Detail -->
+    <div class="bg-white rounded-xl shadow border overflow-hidden">
+        <div class="p-4 border-b bg-gray-50">
+            <h3 class="text-xl font-semibold text-blue-900">
+                <i class="fa-solid fa-calendar-week mr-2"></i> Detail Mingguan
+            </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">
+                            Minggu
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">
+                            Jumlah
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200">
+                    {% for s in savings %}
+                    <tr class="hover:bg-indigo-50 transition">
+                        <td class="px-6 py-4 text-center font-semibold text-cyan-600">
+                            Minggu {{ s.week }}
+                        </td>
+                        <td class="px-6 py-4 text-center font-extrabold text-indigo-600">
+                            Rp {{ s.amount | format_rupiah }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if savings|length == 0 %}
+        <div class="p-4 text-center text-gray-500">
+            Belum ada data tabungan.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+
+
+{% endblock %}
